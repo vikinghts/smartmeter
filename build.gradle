@@ -1,0 +1,141 @@
+buildscript {
+    repositories {
+        maven { url 'http://jcenter.bintray.com' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-cargo-plugin:1.4'
+        classpath 'org.hidetake:gradle-ssh-plugin:0.3.0'
+    }
+}
+
+apply plugin: 'cargo'
+apply plugin: 'ssh'
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+//find out howto make groovy directories in the systemTest
+sourceSets {
+    systemTest
+    performanceTest
+    integrationTest
+    resources
+}
+
+dependencies {
+    providedCompile 'javax.servlet:servlet-api:2.5'
+    runtime 'javax.servlet:jstl:1.1.2'
+    compile localGroovy()
+    testCompile localGroovy()
+    testCompile "org.testng:testng:6.3.1"
+    testCompile "junit:junit:4.9"
+    testCompile "org.mockito:mockito-all:1.9.5"
+    runtime 'postgresql:postgresql:9.0-801.jdbc4'
+    //compile 'postgresql:postgresql:9.0-801.jdbc4'
+
+    integrationTestCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+    integrationTestCompile configurations.testCompile
+    integrationTestRuntime configurations.testRuntime
+    systemTestCompile configurations.testCompile
+    systemTestRuntime configurations.testRuntime
+    performanceTestCompile configurations.testCompile
+    performanceTestRuntime configurations.testRuntime
+
+}
+
+test {
+    useTestNG()
+}
+
+ext {
+    tomcatLog = file("build/tomcatOutput.log")
+}
+
+task prepareTomcatLog(dependsOn: 'war') << {
+    if (!tomcatLog.exists()) {
+        tomcatLog.createNewFile()
+    }
+}
+
+cargoStartLocal.dependsOn('prepareTomcatLog')
+
+if (!hasProperty('localTomcatPath')) {
+    cargoLocalTomcat = "localTomcatPath NOT SET!"
+} else {
+    cargoLocalTomcat = localTomcatPath
+}
+logger.quiet "cargoLocalTomcat = ${cargoLocalTomcat}"
+
+
+cargo {
+
+    containerId = 'tomcat7x'
+    port = 7070
+
+    deployable {
+        file = file("build/libs/simpleWebService.war")
+        context = '/'
+    }
+
+    remote {
+        hostname = "to_be_done"
+        username = 'perceptive'
+        password = 'pp4pass'
+    }
+
+    local {
+        homeDir = file("${cargoLocalTomcat}")
+        output = tomcatLog
+        timeout = 60000
+
+        //does not work..... log said it copyied but it did not...
+        configFile {
+            file = file('simpleWebService_database.properties')
+            toDir = file("${cargoLocalTomcat}/conf/PSW_properties/simpleWebService_database.properties")
+        }
+
+        containerProperties {
+            property 'cargo.tomcat.ajp.port', 8009
+        }
+    }
+
+}
+
+task systemTest(type: Test) {
+    testClassesDir = sourceSets.systemTest.output.classesDir
+    classpath = sourceSets.systemTest.runtimeClasspath
+    reports.junitXml.destination = file("${reporting.baseDir}/systemTest")
+    reports.html.destination = file("${reporting.baseDir}/systemTest")
+}
+
+
+task performanceTest(type: Test) {
+    testClassesDir = sourceSets.performanceTest.output.classesDir
+    classpath = sourceSets.performanceTest.runtimeClasspath
+    reports.junitXml.destination = file("${reporting.baseDir}/performanceTest")
+    reports.html.destination = file("${reporting.baseDir}/performanceTest")
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    reports.junitXml.destination = file("${reporting.baseDir}/integrationTest")
+    reports.html.destination = file("${reporting.baseDir}/integrationTest")
+}
+
+task liveTestGroup(dependsOn: ['systemTest', 'performanceTest', 'integrationTest'])
+//to start/stop tomcat for test runs
+liveTestGroup.dependsOn war, cargoStartLocal
+liveTestGroup.finalizedBy cargoStopLocal
+
+
+
+
+
