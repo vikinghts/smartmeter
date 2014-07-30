@@ -20,6 +20,7 @@ class ConnectToServerTest {
                     if (buffer.contains('SSH')) {
                         found = true
                     }
+                    false
                 }
             } catch (ConnectException ce) {
                 sleep(5000);

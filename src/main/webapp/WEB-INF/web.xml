@@ -6,7 +6,7 @@
     <servlet>
         <display-name>HelloWorldServlet</display-name>
         <servlet-name>HelloWorldServlet</servlet-name>
-        <servlet-class>com.soldev.HelloWorldServlet</servlet-class>
+        <servlet-class>com.soldev.SmartMeterWebProvider</servlet-class>
     </servlet>
 
     <servlet-mapping>
