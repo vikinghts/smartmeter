@@ -118,7 +118,7 @@ cargo {
 
     deployable {
         file = file("build/libs/smartMeter.war")
-        context = '/'
+        context = '/smartMeter'
     }
 
     remote {
