@@ -1,5 +1,3 @@
-package com.soldev
-
 import org.testng.annotations.Test
 
 //import org.junit.Test;

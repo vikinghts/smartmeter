@@ -1,4 +1,3 @@
-package com.soldev
 
 import org.testng.annotations.Test
 
@@ -25,7 +24,7 @@ class ConnectToServerTest {
             } catch (ConnectException ce) {
                 sleep(5000);
                 retryCount = retryCount + 1
-                println "retryCount = ${retryCount}"
+                println "retryCount = ${retryCount} error : " + ce
             }
         }
     }

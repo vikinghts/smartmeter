@@ -37,8 +37,11 @@ sourceSets {
 dependencies {
     providedCompile 'javax.servlet:servlet-api:2.5'
     compile "jfree:jfreechart:1.0.12"
-    compile "org.slf4j:slf4j-api:1.7.5"
     compile "joda-time:joda-time:2.2"
+
+    compile(group: 'log4j', name: 'log4j', version: '1.2.17')
+    compile(group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.6.6') // van nexus apd
+    compile(group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5')
 
 
     //providedCompile 'org.jfree:jfreechart:1.0.13'
@@ -55,6 +58,7 @@ dependencies {
     runtime "org.slf4j:log4j-over-slf4j:1.7.5"
     runtime "org.slf4j:jcl-over-slf4j:1.7.5"
     runtime "org.slf4j:jul-to-slf4j:1.7.5"
+
     //compile 'postgresql:postgresql:9.0-801.jdbc4'
 
     integrationTestCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
@@ -65,12 +69,6 @@ dependencies {
     performanceTestCompile configurations.testCompile
     performanceTestRuntime configurations.testRuntime
 
-}
-
-test {
-    //useTestNG()
-    //todo remove maybe....
-    false
 }
 
 jacocoTestReport {
@@ -89,9 +87,10 @@ checkstyleMain << {
 
 ext {
     tomcatLog = file("build/tomcatOutput.log")
+    cargoLocalTomcat  = "localTomcatPath NOT SET!"
 }
 
-task prepareTomcatLog(dependsOn: 'war') {
+task prepareTomcatLog() {
     if (!tomcatLog.exists()) {
         if (!buildDir.exists()) {
                 buildDir.mkdir()
@@ -100,10 +99,12 @@ task prepareTomcatLog(dependsOn: 'war') {
     }
 }
 
-cargoStartLocal.dependsOn('prepareTomcatLog')
+
+
+cargoRunLocal.dependsOn('prepareTomcatLog','war')
 
 if (!hasProperty('localTomcatPath')) {
-    cargoLocalTomcat = "localTomcatPath NOT SET!"
+    //cargoLocalTomcat = "localTomcatPath NOT SET!"
 } else {
     cargoLocalTomcat = localTomcatPath
 }
@@ -113,7 +114,7 @@ logger.quiet "cargoLocalTomcat = ${cargoLocalTomcat}"
 cargo {
 
     containerId = 'tomcat7x'
-    port = 7070
+    port = 9080
 
     deployable {
         file = file("build/libs/smartMeter.war")
@@ -121,9 +122,9 @@ cargo {
     }
 
     remote {
-        hostname = "to_be_done"
-        username = 'perceptive'
-        password = 'pp4pass'
+        hostname = "odin.nl.cx"
+        username = 'bpmone'
+        password = 'janka12345'
     }
 
     local {
@@ -132,7 +133,7 @@ cargo {
         timeout = 60000
 
         containerProperties {
-            property 'cargo.tomcat.ajp.port', 8009
+            property 'cargo.tomcat.ajp.port', 8010
         }
     }
 
