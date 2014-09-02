@@ -46,6 +46,12 @@ public class SmartMeterWebProvider extends HttpServlet {
             generateGraphFile(hour, day, month, resp);
         }
 
+        if ( req.getRequestURI().contains("test")) {
+            resp.getOutputStream().write(writeHead().getBytes());
+            resp.getOutputStream().write("BURP".getBytes());
+            resp.getOutputStream().write(writeTail().getBytes());
+        }
+
         if ( req.getRequestURI().contains("sql")) {
             if ( req.getRequestURI().contains("curpower")) {
                 generateGraphSql("SELECT datetime,curpower from measurements",resp);
