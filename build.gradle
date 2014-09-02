@@ -78,11 +78,12 @@ jacocoTestReport {
 }
 
 
-checkstyleMain << {
+/*checkstyleMain << {
     ant.xslt(in: reports.xml.destination,
             style: new File('config/checkstyle-noframes-sorted.xsl'),
             out: new File(reports.xml.destination.parent, 'main.html'))
 }
+*/
 
 
 ext {
