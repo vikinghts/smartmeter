@@ -17,8 +17,8 @@ apply plugin: 'war'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'jacoco'
-apply plugin: 'pmd'
-//apply plugin: 'checkstyle'
+//apply plugin: 'pmd'
+apply plugin: 'checkstyle'
 apply plugin: "sonar-runner"
 
 
@@ -77,13 +77,13 @@ jacocoTestReport {
     }
 }
 
-/*
+
 checkstyleMain << {
     ant.xslt(in: reports.xml.destination,
             style: new File('config/checkstyle-noframes-sorted.xsl'),
             out: new File(reports.xml.destination.parent, 'main.html'))
 }
-*/
+
 
 ext {
     tomcatLog = file("build/tomcatOutput.log")
