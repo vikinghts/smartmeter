@@ -68,7 +68,6 @@ public class DbParser {
             }
             rs.close();
         } catch (SQLException e) {
-            rs.close();
             LOG.error("Connection Failed! Check output console", e);
         }
 
