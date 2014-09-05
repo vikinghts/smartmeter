@@ -66,9 +66,12 @@ public class DbParser {
                 }
                 retVal = retVal + "<BR>";
             }
+            rs.close();
         } catch (SQLException e) {
+            rs.close();
             LOG.error("Connection Failed! Check output console", e);
         }
+
 
         LOG.info("result set from query :" + statement + "\n result: " + retVal + "end of result");
         return retVal;
