@@ -52,7 +52,7 @@ public class DbParser {
         driverLoaded();
         Statement st;
         st = buildUpConnection(driverManager);
-        ResultSet rs;
+        ResultSet rs = null;
 
         String retVal = "";
         try {
