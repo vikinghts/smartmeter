@@ -36,7 +36,7 @@ public class DbParser {
         try {
             return  driverManager.getConnection("jdbc:postgresql://192.168.8.1:5432/smartmeterdb", "smartmeteruser","pp4pass");
         } catch (SQLException e) {
-            LOG.error("Connection Failed! Check output console", e);
+            LOG.error("build up connection  Failed!", e);
         }
         return null;
     }
@@ -67,7 +67,7 @@ public class DbParser {
             st.close();
             connection.close();
         } catch (SQLException e) {
-            LOG.error("Connection Failed! Check output console", e);
+            LOG.error("do Get db data Failed!", e);
         } finally {
             try {
                 if(rs != null) {
@@ -80,7 +80,7 @@ public class DbParser {
                     connection.close();
                 }
             } catch (SQLException eIn) {
-                LOG.error("Connection Failed! Check output console", eIn);
+                LOG.error("do Get db data double Failed!", eIn);
             }
         }
 
@@ -110,7 +110,7 @@ public class DbParser {
             st.close();
             connection.close();
         } catch (SQLException e) {
-            LOG.error("Connection Failed! Check output console", e);
+            LOG.error("do Get Db Data Map Failed!", e);
         } finally {
             try {
                 if (rs != null) {
@@ -123,7 +123,7 @@ public class DbParser {
                     connection.close();
                 }
             } catch (SQLException eIn) {
-                LOG.error("Connection Failed! Check output console", eIn);
+                LOG.error("do Get Db Data Map double failedFailed!", eIn);
             }
         }
 
