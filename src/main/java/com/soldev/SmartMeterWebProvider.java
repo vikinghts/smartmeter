@@ -27,6 +27,7 @@ public class SmartMeterWebProvider extends HttpServlet {
 
     private static final String TMP_FOLDER = "/tmp/";
     private static final String WATT = "watt";
+    private static final Integer IGNORE = 99;
 
 
     @Override
@@ -40,7 +41,7 @@ public class SmartMeterWebProvider extends HttpServlet {
 
         if ( req.getRequestURI().contains("daypicfromfile")) {
             DateTime dt = new DateTime();
-            int hour = 99;
+            int hour = IGNORE;
             int day = dt.getDayOfMonth();
             int month = 8;
             generateGraphFile(hour, day, month, resp);
@@ -130,7 +131,7 @@ public class SmartMeterWebProvider extends HttpServlet {
             LOG.debug("Get map contains unfilterd [time= " + entry.getKey() + WATT + entry.getValue() + " ] " );
             DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm");
             DateTime dt = formatter.parseDateTime(entry.getKey().toString());
-            if ((day == dt.getDayOfMonth() || day == 99) && (hour == dt.getHourOfDay() || hour == 99) && (month == dt.getMonthOfYear() || hour == 99)) {
+            if ((day == dt.getDayOfMonth() || day == IGNORE) && (hour == dt.getHourOfDay() || hour == IGNORE) && (month == dt.getMonthOfYear() || hour == IGNORE)) {
                 filteredMaps.put(entry.getKey(), entry.getValue());
             }
         }
