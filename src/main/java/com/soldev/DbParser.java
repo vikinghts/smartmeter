@@ -4,8 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by kjansen on 24/08/14.
@@ -24,7 +23,16 @@ public class DbParser {
 
     public String getDbData(String statement) {
         DriverManager driverManager = null;
-        return doGetDbData(driverManager,statement);
+        SortedMap maps = null;
+        maps = doGetDbDataMap(driverManager,statement);
+        Collection entrySet = maps.entrySet();
+        String retVal = "";
+        for (Iterator it = entrySet.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            LOG.debug("Db Data contains[  " + entry.getKey() + " = " + entry.getValue() + " ]" );
+            retVal = retVal  + "Value = " + entry.getValue().toString() + " Key = " + entry.getKey().toString() + "<BR>";
+        }
+        return retVal;
     }
 
     public SortedMap getDbDataMap(String statement) {
@@ -41,55 +49,7 @@ public class DbParser {
         return null;
     }
 
-
-
-    public String doGetDbData(DriverManager driverManager, String statement) {
-
-        driverLoaded();
-        String retVal = "";
-        Connection connection = null;
-        Statement st = null;
-        ResultSet rs = null;
-
-        try {
-            connection = buildUpConnection(driverManager);
-            st = connection.createStatement();
-            rs = st.executeQuery(statement);
-            Integer nrCols = rs.getMetaData().getColumnCount();
-
-            while ( rs.next() ) {
-                for(int i=1; i <= nrCols; i++) {
-                    retVal = retVal + "value : " + rs.getString(i) + " - ";
-                }
-                retVal = retVal + "<BR>";
-            }
-            rs.close();
-            st.close();
-            connection.close();
-        } catch (SQLException e) {
-            LOG.error("do Get db data Failed!", e);
-        } finally {
-            try {
-                if(rs != null) {
-                    rs.close();
-                }
-                if(st != null) {
-                    st.close();
-                }
-                if(connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException eIn) {
-                LOG.error("do Get db data double Failed!", eIn);
-            }
-        }
-
-        LOG.info("result set from query :" + statement + "\n result: " + retVal + "end of result");
-        return retVal;
-    }
-
     public SortedMap doGetDbDataMap(DriverManager driverManager, String statement) {
-
         driverLoaded();
         SortedMap maps = new TreeMap();
         Connection connection = null;
