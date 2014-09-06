@@ -32,32 +32,29 @@ public class DbParser {
         return doGetDbDataMap(driverManager, statement);
     }
 
-    public Statement buildUpConnection(DriverManager driverManager) {
-        Connection connection;
-        Statement st = null;
-
+    public Connection buildUpConnection(DriverManager driverManager) {
         try {
-            connection = driverManager.getConnection(
-                    "jdbc:postgresql://192.168.8.1:5432/smartmeterdb", "smartmeteruser",
-                    "pp4pass");
-            st = connection.createStatement();
+            return  driverManager.getConnection("jdbc:postgresql://192.168.8.1:5432/smartmeterdb", "smartmeteruser","pp4pass");
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
         }
-        return st;
+        return null;
     }
+
+
 
     public String doGetDbData(DriverManager driverManager, String statement) {
 
         driverLoaded();
         Statement st;
-        st = buildUpConnection(driverManager);
         ResultSet rs = null;
-
         String retVal = "";
-        try {
-            rs = st.executeQuery(statement);
+        Connection connection;
 
+        try {
+            connection = buildUpConnection(driverManager);
+            st = connection.createStatement();
+            rs = st.executeQuery(statement);
             Integer nrCols = rs.getMetaData().getColumnCount();
 
             while ( rs.next() ) {
@@ -67,6 +64,7 @@ public class DbParser {
                 retVal = retVal + "<BR>";
             }
             rs.close();
+            connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
         }
@@ -80,11 +78,12 @@ public class DbParser {
 
         driverLoaded();
         Statement st;
-        st = buildUpConnection(driverManager);
         ResultSet rs;
         SortedMap maps = new TreeMap();
-
+        Connection connection;
         try {
+            connection = buildUpConnection(driverManager);
+            st = connection.createStatement();
             rs = st.executeQuery(statement);
 
             Integer nrCols = rs.getMetaData().getColumnCount();
@@ -92,6 +91,8 @@ public class DbParser {
             while ( rs.next() ) {
                     maps.put(rs.getString(1), rs.getString(2));
             }
+            rs.close();
+            connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
         }
