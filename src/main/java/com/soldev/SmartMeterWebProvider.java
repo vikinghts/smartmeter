@@ -28,6 +28,8 @@ public class SmartMeterWebProvider extends HttpServlet {
     private static final String TMP_FOLDER = "/tmp/";
     private static final String WATT = "watt";
     private static final Integer IGNORE = 99;
+    private static final Integer CURMONTH = 9;
+
 
 
     @Override
@@ -43,7 +45,7 @@ public class SmartMeterWebProvider extends HttpServlet {
             DateTime dt = new DateTime();
             int hour = IGNORE;
             int day = dt.getDayOfMonth();
-            int month = 8;
+            int month = CURMONTH;
             generateGraphFile(hour, day, month, resp);
         }
 
