@@ -26,6 +26,8 @@ import java.util.SortedMap;
  */
 public class GraphGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(SmartMeterWebProvider.class);
+    private static final Integer GRAPH_WIDTH = 900;
+    private static final Integer GRAPH_HIGHTH = 450;
 
     public void printGraph(SortedMap maps, String graphFileName, String mode) {
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
@@ -75,7 +77,7 @@ public class GraphGenerator {
 
     public void safeGraphToJpg(ChartUtilities chartUtil, JFreeChart chart,String graphFileName) {
         try {
-            chartUtil.saveChartAsJPEG(new File(graphFileName), chart, 900, 450);
+            chartUtil.saveChartAsJPEG(new File(graphFileName), chart, GRAPH_WIDTH, GRAPH_HIGHTH);
         } catch (IOException e) {
             LOG.error("Problem occurred creating chart jpg.", e);
         }
@@ -83,14 +85,14 @@ public class GraphGenerator {
 
     public void safeGraphToPng(ChartUtilities chartUtil, JFreeChart chart,String graphFileName) {
         try {
-            chartUtil.saveChartAsPNG(new File(graphFileName), chart, 900, 450);
+            chartUtil.saveChartAsPNG(new File(graphFileName), chart, GRAPH_WIDTH, GRAPH_HIGHTH);
         } catch (IOException e) {
             LOG.error("Problem occurred creating chart as png.", e);
         }
     }
 
     public byte[] safeGraphToByte(JFreeChart chart) {
-        BufferedImage objBufferedImage = chart.createBufferedImage(600, 800);
+        BufferedImage objBufferedImage = chart.createBufferedImage(GRAPH_WIDTH, GRAPH_HIGHTH);
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         try {
             ImageIO.write(objBufferedImage, "png", bas);
