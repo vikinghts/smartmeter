@@ -46,11 +46,11 @@ public class DbParser {
     public String doGetDbData(DriverManager driverManager, String statement) {
 
         driverLoaded();
-        Statement st;
         String retVal = "";
-        Connection connection;
 
         try {
+            Connection connection;
+            Statement st;
             ResultSet rs = null;
 
             connection = buildUpConnection(driverManager);
@@ -65,6 +65,7 @@ public class DbParser {
                 retVal = retVal + "<BR>";
             }
             rs.close();
+            st.close();
             connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
@@ -78,11 +79,12 @@ public class DbParser {
     public SortedMap doGetDbDataMap(DriverManager driverManager, String statement) {
 
         driverLoaded();
-        Statement st;
-        ResultSet rs;
         SortedMap maps = new TreeMap();
-        Connection connection;
         try {
+            Connection connection;
+            Statement st;
+            ResultSet rs = null;
+
             connection = buildUpConnection(driverManager);
             st = connection.createStatement();
             rs = st.executeQuery(statement);
@@ -93,6 +95,7 @@ public class DbParser {
                     maps.put(rs.getString(1), rs.getString(2));
             }
             rs.close();
+            st.close();
             connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
