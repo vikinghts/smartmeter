@@ -47,12 +47,11 @@ public class DbParser {
 
         driverLoaded();
         String retVal = "";
+        Connection connection = null;
+        Statement st = null;
+        ResultSet rs = null;
 
         try {
-            Connection connection;
-            Statement st;
-            ResultSet rs = null;
-
             connection = buildUpConnection(driverManager);
             st = connection.createStatement();
             rs = st.executeQuery(statement);
@@ -69,8 +68,8 @@ public class DbParser {
             connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
-        }
 
+        }
 
         LOG.info("result set from query :" + statement + "\n result: " + retVal + "end of result");
         return retVal;
@@ -80,11 +79,11 @@ public class DbParser {
 
         driverLoaded();
         SortedMap maps = new TreeMap();
-        try {
-            Connection connection;
-            Statement st;
-            ResultSet rs = null;
+        Connection connection = null;
+        Statement st= null;
+        ResultSet rs = null;
 
+        try {
             connection = buildUpConnection(driverManager);
             st = connection.createStatement();
             rs = st.executeQuery(statement);
