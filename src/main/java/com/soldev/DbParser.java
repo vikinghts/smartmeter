@@ -47,11 +47,12 @@ public class DbParser {
 
         driverLoaded();
         Statement st;
-        ResultSet rs = null;
         String retVal = "";
         Connection connection;
 
         try {
+            ResultSet rs = null;
+
             connection = buildUpConnection(driverManager);
             st = connection.createStatement();
             rs = st.executeQuery(statement);
