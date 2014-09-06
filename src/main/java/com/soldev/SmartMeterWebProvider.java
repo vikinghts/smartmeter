@@ -50,9 +50,7 @@ public class SmartMeterWebProvider extends HttpServlet {
         }
 
         if ( req.getRequestURI().contains("test")) {
-            resp.getOutputStream().write(writeHead().getBytes());
-            resp.getOutputStream().write("BURP".getBytes());
-            resp.getOutputStream().write(writeTail().getBytes());
+            doTest(resp);
         }
 
         if ( req.getRequestURI().contains("sql")) {
@@ -71,24 +69,43 @@ public class SmartMeterWebProvider extends HttpServlet {
         }
 
         if ( req.getRequestURI().contains("dbdata")) {
-            DbParser dbParser = new DbParser();
-            dbParser.driverLoaded();
+            handleDbRequests(req,resp);
+        }
+
+
+    }
+
+    public void doTest(HttpServletResponse resp) {
+        try {
             resp.getOutputStream().write(writeHead().getBytes());
-            if ( req.getRequestURI().contains("curpower")) {
+            resp.getOutputStream().write("BURP".getBytes());
+            resp.getOutputStream().write(writeTail().getBytes());
+        } catch (IOException ie) {
+            LOG.error("Error writing to web server:" ,ie);
+        }
+    }
+
+    public void handleDbRequests(HttpServletRequest req,HttpServletResponse resp){
+        DbParser dbParser = new DbParser();
+        dbParser.driverLoaded();
+        try {
+            resp.getOutputStream().write(writeHead().getBytes());
+            if (req.getRequestURI().contains("curpower")) {
                 resp.getOutputStream().write(dbParser.getDbData("SELECT datetime,curpower from measurements").getBytes());
             }
-            if ( req.getRequestURI().contains("totalgas")) {
+            if (req.getRequestURI().contains("totalgas")) {
                 resp.getOutputStream().write(dbParser.getDbData("SELECT datetime,totalgas from measurements").getBytes());
             }
-            if ( req.getRequestURI().contains("totaldaypower")) {
+            if (req.getRequestURI().contains("totaldaypower")) {
                 resp.getOutputStream().write(dbParser.getDbData("SELECT datetime,totaldaypower from measurements").getBytes());
             }
-            if ( req.getRequestURI().contains("totalnightpower")) {
+            if (req.getRequestURI().contains("totalnightpower")) {
                 resp.getOutputStream().write(dbParser.getDbData("SELECT datetime,totalnightpower from measurements").getBytes());
             }
             resp.getOutputStream().write(writeTail().getBytes());
+        } catch (IOException ie) {
+            LOG.error("Error writing db results web server:" ,ie);
         }
-
     }
 
     public String writeHead() {
