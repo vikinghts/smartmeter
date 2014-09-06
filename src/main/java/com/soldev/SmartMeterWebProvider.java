@@ -133,7 +133,7 @@ public class SmartMeterWebProvider extends HttpServlet {
             LOG.debug("Get map contains unfilterd [time= " + entry.getKey() + WATT + entry.getValue() + " ] " );
             DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmm");
             DateTime dt = formatter.parseDateTime(entry.getKey().toString());
-            if ((day == dt.getDayOfMonth() || day == IGNORE) && (hour == dt.getHourOfDay() || hour == IGNORE) && (month == dt.getMonthOfYear() || hour == IGNORE)) {
+            if ((day.equals(dt.getDayOfMonth()) || day.equals(IGNORE)) && (hour.equals(dt.getHourOfDay()) || hour.equals(IGNORE)) && (month.equals(dt.getMonthOfYear()) || hour.equals(IGNORE))) {
                 filteredMaps.put(entry.getKey(), entry.getValue());
             }
         }
