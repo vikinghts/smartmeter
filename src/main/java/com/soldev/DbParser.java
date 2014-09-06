@@ -68,7 +68,20 @@ public class DbParser {
             connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
-
+        } finally {
+            try {
+                if(rs != null) {
+                    rs.close();
+                }
+                if(st != null) {
+                    st.close();
+                }
+                if(connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException eIn) {
+                LOG.error("Connection Failed! Check output console", eIn);
+            }
         }
 
         LOG.info("result set from query :" + statement + "\n result: " + retVal + "end of result");
@@ -98,6 +111,20 @@ public class DbParser {
             connection.close();
         } catch (SQLException e) {
             LOG.error("Connection Failed! Check output console", e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException eIn) {
+                LOG.error("Connection Failed! Check output console", eIn);
+            }
         }
 
         return maps;
