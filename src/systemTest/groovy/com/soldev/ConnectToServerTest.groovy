@@ -19,14 +19,14 @@ class ConnectToServerTest {
         Integer.metaClass.getSeconds = { ->
             delegate * 1000
         }
-
+        /*
         // Get content of URL with parameters.
         def content = url.getText(connectTimeout: 10.seconds, readTimeout: 10.seconds,
                 useCaches: true, allowUserInteraction: false,
                 requestProperties: ['User-Agent': 'Groovy Sample Script'])
 
         assert content == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
-
+        */
         url.newReader(connectTimeout: 10.seconds, useCaches: true).withReader { reader ->
             assert reader.readLine() == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
         }
@@ -43,7 +43,7 @@ class ConnectToServerTest {
         }
 
         url.newReader(connectTimeout: 10.seconds, useCaches: true).withReader { reader ->
-            assert reader.readLine() == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
+            assert reader.readLine() == "<html><head><title>SmartMeter</title></head><body>PostgreSQL 9.2.8 on x86_64-redhat-linux-gnu, compiled by gcc (GCC) 4.8.2 20131212 (Red Hat 4.8.2-7), 64-bit</body></html>"
         }
     }
 }
