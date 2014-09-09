@@ -1,31 +1,49 @@
+package com.soldev
 
-import org.testng.annotations.Test
+
+import org.junit.Test
+import org.junit.Ignore
+
 
 /**
  * Created by kjansen on 28/04/14.
  */
 class ConnectToServerTest {
-    def retryCount = 0
-    def found = false
 
     @Test
-    void if_i_send_a_request_to_the_server_8080_it_should_answer() {
-        while (!found && retryCount < 12) {
-            try {
-                def testSocket = new Socket("odin.nl.cx", , true)
-                testSocket.withStreams { input, output ->
-                    def buffer = input.newReader().readLine()
-                    println "response = $buffer"
-                    if (buffer.contains('SSH')) {
-                        found = true
-                    }
-                    false
-                }
-            } catch (ConnectException ce) {
-                sleep(5000);
-                retryCount = retryCount + 1
-                println "retryCount = ${retryCount} error : " + ce
-            }
+    void if_i_send_a_request_to_the_server_with_test_it_should_answer_burp() {
+        def url = "http://odin.nl.cx:9080/smartMeter/test".toURL()
+
+        // Simple Integer enhancement to make
+        // 10.seconds be 10 * 1000 ms.
+        Integer.metaClass.getSeconds = { ->
+            delegate * 1000
+        }
+
+        // Get content of URL with parameters.
+        def content = url.getText(connectTimeout: 10.seconds, readTimeout: 10.seconds,
+                useCaches: true, allowUserInteraction: false,
+                requestProperties: ['User-Agent': 'Groovy Sample Script'])
+
+        assert content == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
+
+        url.newReader(connectTimeout: 10.seconds, useCaches: true).withReader { reader ->
+            assert reader.readLine() == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
+        }
+    }
+
+    @Test
+    void if_i_send_a_request_to_the_server_with_dbversion_it_should_answer_the_version() {
+        def url = "http://odin.nl.cx:9080/smartMeter/dbversion".toURL()
+
+        // Simple Integer enhancement to make
+        // 10.seconds be 10 * 1000 ms.
+        Integer.metaClass.getSeconds = { ->
+            delegate * 1000
+        }
+
+        url.newReader(connectTimeout: 10.seconds, useCaches: true).withReader { reader ->
+            assert reader.readLine() == "<html><head><title>SmartMeter</title></head><body>BURP</body></html>"
         }
     }
 }

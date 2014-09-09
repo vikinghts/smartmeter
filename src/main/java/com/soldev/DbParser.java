@@ -49,6 +49,52 @@ public class DbParser {
         return null;
     }
 
+    public String doGetDatabaseVersion() {
+        DriverManager driverManager = null;
+        return getDatabaseVersion(driverManager);
+    }
+
+    public String getDatabaseVersion(DriverManager driverManager) {
+        driverLoaded();
+        Connection connection = null;
+        Statement st= null;
+        ResultSet rs = null;
+        String retVal = "";
+
+        try {
+            connection = buildUpConnection(driverManager);
+            st = connection.createStatement();
+            rs = st.executeQuery("SELECT version();");
+
+            Integer nrCols = rs.getMetaData().getColumnCount();
+            LOG.info("number of calls:"+ nrCols.toString());
+            while ( rs.next() ) {
+                retVal = retVal + rs.getString(1);
+            }
+            rs.close();
+            st.close();
+            connection.close();
+        } catch (SQLException e) {
+            LOG.error("do Get Db Data Map Failed!", e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException eIn) {
+                LOG.error("do Get Db Data Map double failedFailed!", eIn);
+            }
+        }
+
+        return retVal;
+    }
+
     public SortedMap doGetDbDataMap(DriverManager driverManager, String statement) {
         driverLoaded();
         SortedMap maps = new TreeMap();

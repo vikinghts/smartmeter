@@ -36,7 +36,7 @@ public class FileParserTest {
         assertNotNull(fp);
     }
 
-    @Ignore
+    @Test
     public void given_create_read_a_file_with_tree_lines_i_should_get_3_map_elements() {
         //When
 
@@ -53,7 +53,7 @@ public class FileParserTest {
         assertTrue(maps.size() == 3);
     }
 
-    @Ignore
+    @Test
     public void given_create_read_a_file_with_0_lines_i_should_get_0_map_elements() {
         //When
         BufferedReader bufferedReader = Mockito.mock(BufferedReader.class);
@@ -69,7 +69,7 @@ public class FileParserTest {
         assertTrue(maps.size() == 0);
     }
 
-    @Ignore
+    @Test
     public void given_create_read_a_file_and_i_thow_an_io_excpetion_it_should_catch_it() {
         //When
         BufferedReader bufferedReader = Mockito.mock(BufferedReader.class);

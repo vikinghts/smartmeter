@@ -36,7 +36,7 @@ public class SmartMeterWebProvider extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-
+        LOG.info("doGet --- kris ---")
         LOG.debug("test = " + req.getRequestURI());
 
         LOG.debug("resp.getOutputStream().write(\"Hello World.\".getBytes()");
@@ -50,7 +50,13 @@ public class SmartMeterWebProvider extends HttpServlet {
         }
 
         if ( req.getRequestURI().contains("test")) {
+            LOG.info("http req test");
             doTest(resp);
+        }
+
+        if ( req.getRequestURI().contains("dbversion")) {
+            LOG.info("http req dbVersion");
+            doGetDbVersion(resp);
         }
 
         if ( req.getRequestURI().contains("sql")) {
@@ -84,6 +90,17 @@ public class SmartMeterWebProvider extends HttpServlet {
             LOG.error("Error writing to web server:" ,ie);
         }
     }
+
+    public void doGetDbVersion(HttpServletResponse resp) {
+        try {
+            resp.getOutputStream().write(writeHead().getBytes());
+            resp.getOutputStream().write(getDbVersion(resp).getBytes());
+            resp.getOutputStream().write(writeTail().getBytes());
+        } catch (IOException ie) {
+            LOG.error("Error writing to web server:" ,ie);
+        }
+    }
+
 
     public void handleDbRequests(HttpServletRequest req,HttpServletResponse resp){
         DbParser dbParser = new DbParser();
@@ -134,6 +151,13 @@ public class SmartMeterWebProvider extends HttpServlet {
         gg.printGraph(maps,graphName,"toJPG");
         displayImage(response, TMP_FOLDER + "sqlResult.jpg");
     }
+
+    public String getDbVersion(HttpServletResponse response) {
+        DbParser dbParser = new DbParser();
+        dbParser.driverLoaded();
+        return dbParser.doGetDatabaseVersion();
+    }
+
 
     public void generateGraphFile(Integer hour, Integer day, Integer month,HttpServletResponse response) {
         FileParser fp = new FileParser();

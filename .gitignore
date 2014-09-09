@@ -1,2 +1,7 @@
 .gradle
 build/
+out
+.DS_Store
+smartMeter.iml
+smartMeter.ipr
+smartMeter.iws
