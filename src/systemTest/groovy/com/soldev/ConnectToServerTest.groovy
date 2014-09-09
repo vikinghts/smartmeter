@@ -12,7 +12,7 @@ class ConnectToServerTest {
     void if_i_send_a_request_to_the_server_8080_it_should_answer() {
         while (!found && retryCount < 12) {
             try {
-                def testSocket = new Socket("ec2-54-186-192-226.us-west-2.compute.amazonaws.com", 22, true)
+                def testSocket = new Socket("odin.nl.cx", , true)
                 testSocket.withStreams { input, output ->
                     def buffer = input.newReader().readLine()
                     println "response = $buffer"

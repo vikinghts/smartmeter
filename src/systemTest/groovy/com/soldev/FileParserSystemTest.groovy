@@ -1,4 +1,3 @@
-import com.soldev.FileParser
 import org.junit.Before
 import org.junit.Ignore
 import org.slf4j.Logger
