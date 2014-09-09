@@ -36,7 +36,7 @@ public class SmartMeterWebProvider extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        LOG.info("doGet --- kris ---")
+        LOG.info("doGet --- kris ---");
         LOG.debug("test = " + req.getRequestURI());
 
         LOG.debug("resp.getOutputStream().write(\"Hello World.\".getBytes()");
